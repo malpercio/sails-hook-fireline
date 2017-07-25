@@ -1,86 +1,87 @@
-const omit = require('lodash/omit');
-const merge = require('lodash/merge');
-const union = require('lodash/union');
-const toLower = require('lodash/toLower');
-const endsWith = require('lodash/endsWith');
-const Promise = require('bluebird');
+const cls = require("continuation-local-storage");
+const merge = require("lodash/merge");
+const omit = require("lodash/omit");
+const Promise = require("bluebird");
+const Sequelize = require("sequelize");
 
 module.exports = function(sails) {
-  global['Sequelize'] = require('sequelize');
-  Sequelize.useCLS(require('continuation-local-storage').createNamespace('sails-sequelize'));
+  global.Sequelize = Sequelize;
+  Sequelize.useCLS(cls.createNamespace("sails-sequelize"));
   return {
     initialize: function(next) {
       var hook = this,
         modelList = [];
+      var connection, migrate, sequelize;
+
       hook.initAdapters();
       hook.initModels();
-
-      var connection, migrate, sequelize;
-      sails.log.verbose('Using connection named ' + sails.config.models.connection);
+      sails.log.verbose("Using connection named " + sails.config.models.connection);
       connection = sails.config.connections[sails.config.models.connection];
       connection.options = connection.options? connection.options: {};
-      connection.dialect = connection.dialect? connection.dialect: 'mysql';
+      connection.dialect = connection.dialect? connection.dialect: "mysql";
       connection.options.dialect = connection.options.dialect? connection.options.dialect: connection.dialect;
-      if (connection == null) {
-        throw new Error('Connection \'' + sails.config.models.connection + '\' not found in config/connections');
+      if (connection === null) {
+        throw new Error("Connection \"" + sails.config.models.connection + "\" not found in config/connections");
       }
-      if (connection.options == null) {
+      if (connection.options === null) {
         connection.options = {};
       }
       connection.options.logging = sails.log.verbose;
       migrate = sails.config.models.migrate;
-      sails.log.verbose('Migration: ' + migrate);
+      sails.log.verbose("Migration: " + migrate);
 
       sequelize = new Sequelize(connection.database, connection.user, connection.password, connection.options);
-      global['sequelize'] = sequelize;
+      global.sequelize = sequelize;
       return sails.modules.loadModels(function(err, models) {
-        if (err != null) {
+        if (err !== null) {
           return next(err);
         }
-        for (let modelName in models) {
-          let modelDef;
+        for (const modelName in models) {
+          const paranoidSchizophrenia = models[modelName].options.paranoidSchizophrenia;
+          const modelDef = models[modelName];
+
           models[modelName].options = models[modelName].options? models[modelName].options: {};
-          let strainedOptions,
-            paranoidSchizophrenia = models[modelName].options.paranoidSchizophrenia;
-          modelDef = models[modelName];
+
           modelDef.extras = {};
           if(modelDef.options.parent){
             modelDef.attributes = merge(modelDef.attributes, models[modelDef.options.parent.toLowerCase()].attributes);
           }
           if(modelDef.options.children){
             modelDef.associations = () => {
-              for(let child of modelDef.options.children){
-                let childModel = global[models[child.toLowerCase()].globalId],
+              for(const child of modelDef.options.children){
+                const childModel = global[models[child.toLowerCase()].globalId],
                   thisModel = global[modelDef.globalId];
+
                 thisModel.belongsTo(childModel, {
                   foreignKey: {
-                    name: child + '_id',
-                  }
+                    name: child + "_id",
+                  },
                 });
                 childModel.hasOne(thisModel, {
                   foreignKey: {
-                    name: child + '_id',
-                  }
+                    name: child + "_id",
+                  },
                 });
               }
             };
             modelDef.options.classMethods = modelDef.options.classMethods? modelDef.options.classMethods: {};
             modelDef.options.classMethods.getChild = (query) => {
-              let include = [],
-                searches= [];
-                thisModel = global[modelDef.globalId];
+              const searches= [];
+
+              thisModel = global[modelDef.globalId];
               query.rejectOnEmpty = true;
-              for(let child of modelDef.options.children){
-                let childModel = global[models[child.toLowerCase()].globalId];
+              for(const child of modelDef.options.children){
+                const childModel = global[models[child.toLowerCase()].globalId];
+
                 searches.push(childModel.findOne(query));
               }
               return Promise.any(searches)
                 .then((parentJoin) => {
-                  let attrib;
                   if(!parentJoin){
                     return parentJoin;
                   }
-                  let modelName = parentJoin.constructor.name;
+                  const modelName = parentJoin.constructor.name;
+
                   return {
                     model: modelName,
                     value: parentJoin,
@@ -88,17 +89,19 @@ module.exports = function(sails) {
                 });
             };
           }
-          modelDef.strainedOptions = omit(modelDef.options, ['paranoidSchizophrenia', 'parent', 'children'])
+          modelDef.strainedOptions = omit(modelDef.options, ["paranoidSchizophrenia", "parent", "children",]);
           modelDef.strainedOptions.scopes = modelDef.strainedOptions.scopes ? modelDef.strainedOptions.scopes: {};
           if(paranoidSchizophrenia){
-            let deletedAt = modelDef.strainedOptions.underscored? 'deleted_at': 'deletedAt';
+            const deletedAt = modelDef.strainedOptions.underscored? "deleted_at": "deletedAt";
+
             modelDef.attributes.deleted_at = {
               type: Sequelize.DATE,
               allowNull: false,
               defaultValue: new Date(0),
               get(){
                 const date = new Date(this.getDataValue(deletedAt));
-                if(date.getTime() == 0){
+
+                if(date.getTime() === 0){
                   return null;
                 }
               },
@@ -118,47 +121,50 @@ module.exports = function(sails) {
           }
           modelList.push(modelDef);
         }
-        for(let modelDef of modelList){
-          let parent = toLower(modelDef.options.parent),
-            children = toLower(modelDef.options.children),
-            attributes = modelDef.options.children? {}: modelDef.attributes;
-          sails.log.verbose('Loading model \'' + modelDef.globalId + '\'');
+        for(const modelDef of modelList){
+          const attributes = modelDef.options.children? {}: modelDef.attributes;
+
+          sails.log.verbose("Loading model \"" + modelDef.globalId + "\"");
           global[modelDef.globalId] = sequelize.define(modelDef.globalId, attributes, modelDef.strainedOptions);
           sails.models[modelDef.globalId.toLowerCase()] = global[modelDef.globalId];
-          for(let method in modelDef.strainedOptions.classMethods){
+          for(const method in modelDef.strainedOptions.classMethods){
             global[modelDef.globalId][method] = modelDef.strainedOptions.classMethods[method];
           }
-          for(let method in modelDef.strainedOptions.instanceMethods){
+          for(const method in modelDef.strainedOptions.instanceMethods){
             global[modelDef.globalId].prototype[method] = modelDef.strainedOptions.instanceMethods[method];
           }
           if(modelDef.options.parent){
-            global[modelDef.globalId].afterCreate('afterChildCreation', (child, options) => {
-              let query = {
+            global[modelDef.globalId].afterCreate("afterChildCreation", (child) => {
+              const query = {
               };
-              query[modelDef.globalId + '_id'] = child.id;
+
+              query[modelDef.globalId + "_id"] = child.id;
               return global[modelDef.options.parent].create(query);
             });
-            global[modelDef.globalId].afterDestroy('afterChildDestruction', (child, options) => {
-              let query = {
+            global[modelDef.globalId].afterDestroy("afterChildDestruction", (child) => {
+              const query = {
                 where: {},
               };
-              query[modelDef.globalId + '_id'] = child.id;
+
+              query[modelDef.globalId + "_id"] = child.id;
               return global[modelDef.options.parent].destroy(query);
             });
           }
         }
 
         for (modelName in models) {
-          let modelDef = models[modelName];
+          const modelDef = models[modelName];
+
           hook.setAssociation(modelDef);
           hook.setDefaultScope(modelDef);
         }
 
-        if(migrate === 'safe') {
+        if(migrate === "safe") {
           return next();
         } else {
-          var forceSync = migrate === 'drop';
-          sequelize.sync({ force: forceSync }).then(function() {
+          const forceSync = migrate === "drop";
+
+          sequelize.sync({ force: forceSync, }).then(function() {
             return next();
           });
         }
@@ -178,9 +184,9 @@ module.exports = function(sails) {
     },
 
     setAssociation: function(modelDef) {
-      if (modelDef.associations != null) {
-        sails.log.verbose('Loading associations for \'' + modelDef.globalId + '\'');
-        if (typeof modelDef.associations === 'function') {
+      if (modelDef.associations !== null) {
+        sails.log.verbose("Loading associations for \"" + modelDef.globalId + "\"");
+        if (typeof modelDef.associations === "function") {
           modelDef.associations(modelDef);
         }
       }
@@ -188,13 +194,14 @@ module.exports = function(sails) {
 
     setDefaultScope: function(modelDef) {
       var model = global[modelDef.globalId];
-      if (modelDef.defaultScope != null) {
-        sails.log.verbose('Loading default scope for \'' + modelDef.globalId + '\'');
-        if (typeof modelDef.defaultScope === 'function') {
-          model.addScope('defaultScope',defaultScope,{override: true});
+
+      if (modelDef.defaultScope !== null) {
+        sails.log.verbose("Loading default scope for \"" + modelDef.globalId + "\"");
+        if (typeof modelDef.defaultScope === "function") {
+          model.addScope("defaultScope",defaultScope,{override: true,});
         }
       }
-    }
+    },
 
   };
 };

@@ -79,7 +79,7 @@ module.exports = {
       "padding-line-between-statements": [
         "error",
         { blankLine: "always", prev: ["const", "let", "var"], next: "*"},
-        { blankLine: "never",    prev: ["const", "let", "var"], next: ["const", "let", "var"]},
+        { blankLine: "never",  prev: ["const", "let", "var"], next: ["const", "let", "var"]},
         { blankLine: "always", prev: "import", next: "*"},
         { blankLine: "never", prev: "import", next: "import"},
       ],
@@ -117,7 +117,7 @@ module.exports = {
       ],
       "comma-style": [
         "error",
-        "first",
+        "last",
       ],
       "linebreak-style": [
         "error",
