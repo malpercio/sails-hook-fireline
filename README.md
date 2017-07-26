@@ -1,7 +1,7 @@
 [![forthebadge](http://forthebadge.com/images/badges/built-by-codebabes.svg)](https://jaque.me/)
 
 [![npm version](https://badge.fury.io/js/sails-hook-fireline.svg)](http://badge.fury.io/js/sails-hook-fireline)
-[![Stories in Progress](https://img.shields.io/waffle/label/malpercio/sails-hook-fireline/in%20progress.svg?style=flat)](https://waffle.io/malpercio/sails-hook-fireline)
+[![Stories in progress](https://img.shields.io/waffle/label/malpercio/sails-hook-fireline/in%20progress.svg)](https://waffle.io/malpercio/sails-hook-fireline)
 [![Build Status](https://travis-ci.org/malpercio/sails-hook-fireline.svg?branch=master)](https://travis-ci.org/malpercio/sails-hook-fireline)
 [![Dependencies](https://david-dm.org/malpercio/sails-hook-fireline.svg)](https://travis-ci.org/malpercio/sails-hook-fireline)
 [![DevDependencies](https://david-dm.org/malpercio/sails-hook-fireline/dev-status.svg)](https://david-dm.org/malpercio/sails-hook-fireline)
