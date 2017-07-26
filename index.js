@@ -202,8 +202,9 @@ module.exports = function(sails) {
     setDefaultScope: function(modelDef) {
       var model = global[modelDef.globalId];
       let defaultScope = modelDef.defaultScope;
+
       if(modelDef.__defaultScopeFunction__){
-        defaultScope = merge(defaultScope, modelDef.__defaultScopeFunction__())
+        defaultScope = merge(defaultScope, modelDef.__defaultScopeFunction__());
       }
       model.addScope("defaultScope", defaultScope,{override: true,});
     },

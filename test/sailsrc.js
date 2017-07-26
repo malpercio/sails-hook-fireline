@@ -24,7 +24,7 @@ module.exports = {
  "connections" : {
     "fireline": {
       "user": "root",
-      "password": "toor",
+      "password": "",
       "database": "fireline_test",
       "dialect": "mysql"
     }

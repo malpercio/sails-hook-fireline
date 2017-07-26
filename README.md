@@ -4,6 +4,8 @@
 [![Stories in progress](https://img.shields.io/waffle/label/malpercio/sails-hook-fireline/in%20progress.svg)](https://waffle.io/malpercio/sails-hook-fireline)
 [![Build Status](https://travis-ci.org/malpercio/sails-hook-fireline.svg?branch=master)](https://travis-ci.org/malpercio/sails-hook-fireline)
 [![Dependencies](https://david-dm.org/malpercio/sails-hook-fireline.svg)](https://travis-ci.org/malpercio/sails-hook-fireline)
+[![bitHound Dependencies](https://www.bithound.io/github/malpercio/sails-hook-fireline/badges/dependencies.svg)](https://www.bithound.io/github/malpercio/sails-hook-fireline/master/dependencies/npm)
+[![bitHound Code](https://www.bithound.io/github/malpercio/sails-hook-fireline/badges/code.svg)](https://www.bithound.io/github/malpercio/sails-hook-fireline)
 [![DevDependencies](https://david-dm.org/malpercio/sails-hook-fireline/dev-status.svg)](https://david-dm.org/malpercio/sails-hook-fireline)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/malpercio/sails-hook-fireline/master/LICENSE)
 
