@@ -42,6 +42,13 @@ module.exports = function(sails) {
 
           models[modelName].options = models[modelName].options? models[modelName].options: {};
 
+          if(!modelDef.defaultScope){
+            modelDef.defaultScope = {};
+          }
+          if(modelDef.defaultScope &&typeof modelDef.defaultScope === "function") {
+            modelDef.__defaultScopeFunction__ = modelDef.defaultScope;
+            modelDef.defaultScope = {};
+          }
           modelDef.extras = {};
           if(modelDef.options.parent){
             modelDef.attributes = merge(modelDef.attributes, models[modelDef.options.parent.toLowerCase()].attributes);
@@ -194,13 +201,11 @@ module.exports = function(sails) {
 
     setDefaultScope: function(modelDef) {
       var model = global[modelDef.globalId];
-
-      if (modelDef.defaultScope !== null) {
-        sails.log.verbose("Loading default scope for \"" + modelDef.globalId + "\"");
-        if (typeof modelDef.defaultScope === "function") {
-          model.addScope("defaultScope",defaultScope,{override: true,});
-        }
+      let defaultScope = modelDef.defaultScope;
+      if(modelDef.__defaultScopeFunction__){
+        defaultScope = merge(defaultScope, modelDef.__defaultScopeFunction__())
       }
+      model.addScope("defaultScope", defaultScope,{override: true,});
     },
 
   };
