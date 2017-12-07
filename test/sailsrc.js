@@ -26,7 +26,12 @@ module.exports = {
       "user": "root",
       "password": "",
       "database": "fireline_test",
-      "dialect": "mysql"
+      "dialect": "mysql",
+      "hooks": {
+        "logging": {
+          beforeLoad:() => {console.log("Before loading")}
+        }
+      },
     }
  }
 }

@@ -110,10 +110,64 @@ It work just the same, except for some minor changes:
     where: {},
     paranoid: false,
   };
-  User.scope(null)findAll(query);
-  User.scope('drugged')findAll(query);
-  User.unscoped()findAll(query);
+  User.scope(null).findAll(query);
+  User.scope('drugged').findAll(query);
+  User.unscoped().findAll(query);
+
   ```
+## Fireline Hooks
+When fireline is preparing your modelrs, you can run your own functions to alter the default behaviour.
+
+```javascript
+somePostgresqlServer: {
+  user: 'postgres',
+  password: '',
+  database: 'sequelize',
+  dialect: 'postgres',
+  options: {
+    dialect: 'postgres',
+    host   : 'localhost',
+    port   : 5432,
+    logging: console.log
+  },
+  hooks: {
+    myFirstHook: {
+      beforeDefinition: (modelDef, modelList) => {},
+      afterDefinition: (modelDef, modelList)  => {},
+      beforeLoad: (modelDef, modelList) => {},
+      afterLoad: (modelList)  => {},
+      beforeAssociation: (model, modelList) => {},
+      afterAssociation: (model, modelList) => {},
+      beforeDefaultScope: (model, modelList) => {},
+      afterDefaultScope: (model, modelList) => {},
+    }
+  }
+}
+```
+
+The hooks to be run are:
+
+* beforeDefinition
+* afterDefinition
+
+(Refering to model charging from files)
+
+* beforeLoad
+* afterLoad
+
+(Sequelize `define`)
+
+
+* beforeAssociation
+* afterAssociation
+
+(Self explanatory)
+
+
+* beforeDefaultScope
+* afterDefaultScope
+
+(Self explanatory)
 
 ## Special Thanks
 A big shoutout to Gergely Munkacsy for starting the base of this fork at `sails-hook-sequelize`.
