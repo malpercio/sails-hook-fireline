@@ -21,5 +21,6 @@ module.exports = {
     classMethods: {},
     instanceMethods: {},
     hooks: {},
+    paranoidSchizophrenia: true,
   },
 };
