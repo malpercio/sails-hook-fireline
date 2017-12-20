@@ -27,6 +27,9 @@ module.exports = {
       "password": "",
       "database": "fireline_test",
       "dialect": "mysql",
+      "options": {
+         "operatorsAliases": false,
+      },
       "hooks": {
         "logging": {
           beforeLoad:() => {console.log("Before loading")}

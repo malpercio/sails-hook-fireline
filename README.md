@@ -82,6 +82,12 @@ module.exports = {
 };
 ```
 
+## Available variables
+
+* `Sequelize` or `sails.Sequelize` as the constructor
+* `sequelize` or `sails.Sequelize` as the instance
+* `Op` as a shortcut to `Sequelize.Op`
+
 ## Sequelize Extensions
 To avoid a potential loss of an unique index when using `deletedAt` (for unicity and softDelete),
 an option can be passed to the model, making its default zero, avoiding such SQL halting experience.
