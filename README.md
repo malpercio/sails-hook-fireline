@@ -23,6 +23,14 @@ Install this hook with:
 $ npm install sails-hook-fireline --save
 ```
 
+And also install `bluebird.js` and add it as a dependency.
+Needed for transactions to work correctly. Please, refrain to the official
+Sequelize dcs for more info about patching Bluebird (done inside this hook).
+
+```bash
+$ npm install bluebird --save
+```
+
 # Configuration
 
 Modify `.sailsrc` to resemble the next file:
