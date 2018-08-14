@@ -16,4 +16,9 @@ before((done) => {
   sails.lift(sailsrc, done);
 });
 
-after(sails.lower);
+after((done) => {
+  sails.lower((err) => {
+    done()
+    process.exit(err);
+  })
+});

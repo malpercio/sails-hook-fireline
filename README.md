@@ -1,12 +1,10 @@
-[![forthebadge](http://forthebadge.com/images/badges/built-by-codebabes.svg)](https://jaque.me/)
+[![forthebadge](http://forthebadge.com/images/badges/built-by-codebabes.svg)](https://coconutt.io/)
 
 [![npm version](https://badge.fury.io/js/sails-hook-fireline.svg)](http://badge.fury.io/js/sails-hook-fireline)
 [![Stories in progress](https://img.shields.io/waffle/label/malpercio/sails-hook-fireline/in%20progress.svg)](https://waffle.io/malpercio/sails-hook-fireline)
 [![Build Status](https://travis-ci.org/malpercio/sails-hook-fireline.svg?branch=master)](https://travis-ci.org/malpercio/sails-hook-fireline)
-[![Dependencies](https://david-dm.org/malpercio/sails-hook-fireline.svg)](https://travis-ci.org/malpercio/sails-hook-fireline)
-[![bitHound Dependencies](https://www.bithound.io/github/malpercio/sails-hook-fireline/badges/dependencies.svg)](https://www.bithound.io/github/malpercio/sails-hook-fireline/master/dependencies/npm)
-[![bitHound Code](https://www.bithound.io/github/malpercio/sails-hook-fireline/badges/code.svg)](https://www.bithound.io/github/malpercio/sails-hook-fireline)
-[![DevDependencies](https://david-dm.org/malpercio/sails-hook-fireline/dev-status.svg)](https://david-dm.org/malpercio/sails-hook-fireline)
+[![Dependencies](https://david-dm.org/malpercio/sails-hook-fireline.svg)](https://david-dm.org/malpercio/sails-hook-fireline)
+[![DevDependencies](https://david-dm.org/malpercio/sails-hook-fireline/dev-status.svg)](https://david-dm.org/malpercio/sails-hook-fireline?type=dev)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/malpercio/sails-hook-fireline/master/LICENSE)
 
 
@@ -20,16 +18,15 @@ It's like Waterline but so much hotter. (Also, exclusive to SQL DB's)
 Install this hook with:
 
 ```bash
-$ npm install sails-hook-fireline --save
+$ npm install sails-hook-fireline bluebird sequelize --save
 ```
 
-And also install `bluebird.js` and add it as a dependency.
-Needed for transactions to work correctly. Please, refrain to the official
-Sequelize dcs for more info about patching Bluebird (done inside this hook).
+As you can see, you have to install [`bluebird`](http://bluebirdjs.com/docs/getting-started.html) and [`sequelize`](http://docs.sequelizejs.com/) independently and add them as dependencies. This allows you to better control you ORM versions, as this hook is  somewhat *version agnostic*.
 
-```bash
-$ npm install bluebird --save
-```
+Bluebird is needed for transactions to work correctly. Please, refrain to the official
+Sequelize docs linked above for more info about patching Bluebird (done inside this hook).
+
+This hook supports versions 4 and 5.0-beta currently.
 
 # Configuration
 
